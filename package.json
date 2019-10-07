@@ -33,13 +33,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gsilber/NodeTypescriptStarter.git"
+    "url": "git+https://github.com/udcymen/NodeTypescriptStarter"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/gsilber/NodeTypescriptStarter/issues"
+    "url": "https://github.com/udcymen/NodeTypescriptStarter/issues"
   },
-  "homepage": "https://github.com/gsilber/NodeTypescriptStarter#readme"
+  "homepage": "https://github.com/udcymen/NodeTypescriptStarter#readme"
 }
