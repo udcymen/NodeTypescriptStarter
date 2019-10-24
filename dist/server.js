@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const body_parser_1 = __importDefault(require("body-parser"));
 const express_1 = __importDefault(require("express"));
-const router_1 = require("./router");
+const mongoose_1 = __importDefault(require("mongoose"));
+const router_1 = require("./router/router");
+const userRouter_1 = require("./router/userRouter");
 class Application {
     constructor() {
         this.app = express_1.default();
@@ -13,6 +15,7 @@ class Application {
         this.app.use(body_parser_1.default.urlencoded({ extended: false }));
         this.app.use(body_parser_1.default.json());
         this.initCors();
+        this.mongoSetup();
     }
     // Starts the server on the port specified in the environment or on port 3000 if none specified.
     start() {
@@ -34,7 +37,18 @@ class Application {
     }
     // setup routes for the express server
     buildRoutes() {
+        this.app.use("/api/user", new userRouter_1.UserRouter().getRouter());
         this.app.use("/api", new router_1.ApiRouter().getRouter());
+    }
+    mongoSetup() {
+        mongoose_1.default.Promise = global.Promise;
+        mongoose_1.default
+            .connect("mongodb+srv://admin:8r0jyHqIEZYb52uU@gameluncher-ve8ed.mongodb.net/test?retryWrites=true&w=majority", {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+            .then(() => console.log("MongoDB connected..."))
+            .catch((err) => console.log(err));
     }
 }
 new Application().start();

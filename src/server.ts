@@ -1,7 +1,8 @@
 import bodyParser from "body-parser";
 import express from "express";
+import mongoose from "mongoose";
 
-import {ApiRouter} from "./router";
+import {UserRouter} from "./router/user";
 
 class Application {
     public app: express.Application;
@@ -9,10 +10,11 @@ class Application {
 
     constructor() {
         this.app = express();
-        this.port = +process.env.serverPort || 3000;
+        this.port = + process.env.serverPort || 3000;
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.json());
         this.initCors();
+        this.mongoSetup();
     }
     // Starts the server on the port specified in the environment or on port 3000 if none specified.
     public start(): void {
@@ -35,7 +37,21 @@ class Application {
     }
     // setup routes for the express server
     public buildRoutes(): void {
-        this.app.use("/api", new ApiRouter().getRouter());
+        this.app.use("/api/user", new UserRouter().getRouter());
+    }
+
+    private mongoSetup(): void {
+        mongoose.Promise = global.Promise;
+        mongoose
+        .connect(
+            "mongodb+srv://admin:8r0jyHqIEZYb52uU@gameluncher-ve8ed.mongodb.net/test?retryWrites=true&w=majority",
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            }
+        )
+        .then(() => console.log("MongoDB connected..."))
+        .catch((err) => console.log(err));
     }
 }
 new Application().start();
