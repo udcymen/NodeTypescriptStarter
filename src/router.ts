@@ -1,5 +1,5 @@
 import express from "express";
-import {Controller} from "./controller";
+import {Controller} from "./Controller/controller";
 
 export class ApiRouter {
     private router: express.Router = express.Router();
