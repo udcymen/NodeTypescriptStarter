@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import express from "express";
 import mongoose from "mongoose";
+import config from "./config/config";
 
 import {UserRouter} from "./router/user";
 
@@ -10,7 +11,7 @@ class Application {
 
     constructor() {
         this.app = express();
-        this.port = + process.env.serverPort || 3000;
+        this.port = + config.port;
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.json());
         this.initCors();
@@ -44,8 +45,9 @@ class Application {
         mongoose.Promise = global.Promise;
         mongoose
         .connect(
-            "mongodb+srv://admin:8r0jyHqIEZYb52uU@gameluncher-ve8ed.mongodb.net/test?retryWrites=true&w=majority",
+            config.database,
             {
+                useCreateIndex: true,
                 useNewUrlParser: true,
                 useUnifiedTopology: true
             }
