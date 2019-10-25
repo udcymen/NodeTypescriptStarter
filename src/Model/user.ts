@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 export type UserDocument = mongoose.Document & {
-    created_date: Date;
     developer: Boolean;
     email: string;
     password: String;
@@ -21,10 +20,6 @@ export type UserDocument = mongoose.Document & {
 };
 
 const UserSchema = new mongoose.Schema({
-    created_date: {
-        default: Date.now,
-        type: Date
-    },
     developer: { type: Boolean},
     email: {
         lowercase: true,
@@ -75,7 +70,6 @@ UserSchema.methods.toJson = function () {
       firstName: this.profile.firstName,
       lastName: this.profile.lastName,
       email: this.email,
-      created_date: this.created_date,
       status: this.status,
       developer: this.developer
     }

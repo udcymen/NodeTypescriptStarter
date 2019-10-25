@@ -25,7 +25,6 @@ export class UserController {
 
     public addNewUser(req: Request, res: Response) {
         const newUser = new User(req.body);
-        console.log(req.body);
         newUser.save((err, user) => {
             if (err) {
                 res.send(err);
