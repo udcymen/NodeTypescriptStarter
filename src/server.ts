@@ -38,7 +38,7 @@ class Application {
     }
     // setup routes for the express server
     public buildRoutes(): void {
-        this.app.use("/api/user", new UserRouter().getRouter());
+        this.app.use("/account", new UserRouter().getRouter());
     }
 
     private mongoSetup(): void {
@@ -49,7 +49,8 @@ class Application {
             {
                 useCreateIndex: true,
                 useNewUrlParser: true,
-                useUnifiedTopology: true
+                useUnifiedTopology: true,
+                useFindAndModify: false
             }
         )
         .then(() => console.log("MongoDB connected..."))
