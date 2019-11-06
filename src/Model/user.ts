@@ -2,44 +2,48 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 export type UserDocument = mongoose.Document & {
-    developer: Boolean;
     email: string;
     is_admin: Boolean;
     password: String;
 
     profile: {
-        firstName: String,
-        lastName: String
+        is_developer: Boolean;
+        firstName: String;
+        lastName: String;
+        status: string;
     };
 
     resetPasswordExpires: string;
     resetPasswordToken: string;
 
-    status: string
-
     comparePassword: comparePasswordFunction;
 };
 
 const UserSchema = new mongoose.Schema({
-    developer: { type: Boolean},
     email: {
         lowercase: true,
         required: true,
         type: String,
         unique: true
     },
+
     is_admin: { type: Boolean},
+    
     password: {
         required: true,
         type: String
     },
+
     profile: {
+        is_developer: { type: Boolean},
         firstName: { type: String },
-        lastName: { type: String }
+        lastName: { type: String },
+        status: { type: String}
     },
+
     resetPasswordExpires: { type: Date },
     resetPasswordToken: { type: String },
-    status: { type: String}
+    
 
 }, { timestamps: true });
 
@@ -66,14 +70,14 @@ const comparePassword: comparePasswordFunction = function (candidatePassword, cb
 
 UserSchema.methods.comparePassword = comparePassword;
 
-UserSchema.methods.toJson = function () {
+UserSchema.methods.toJSON = function () {
     return {
       _id: this._id,
       firstName: this.profile.firstName,
       lastName: this.profile.lastName,
       email: this.email,
-      status: this.status,
-      developer: this.developer
+      status: this.profile.status,
+      is_developer: this.profile.is_developer,
     }
   }
 

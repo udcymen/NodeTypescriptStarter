@@ -17,7 +17,7 @@ export class UserController {
                 if (err) { return res.status(400).json({ error: "bad data" }); }
                 if (!isMatch) { return res.status(400).json({ error: 'Your login details could not be verified. Please try again.' }); }
     
-                    let userInfo = user.toJson();
+                    let userInfo = user.toJSON();
                     res.status(200).json({
                         token: 'Bearer ' + jsonwebtoken.sign(userInfo, config.secret ,{ expiresIn: 10080 }),
                         user: userInfo
@@ -56,13 +56,13 @@ export class UserController {
                     email: email,
                     password: password,
                     status: "New User",
-                    developer: false,
+                    is_developer: false,
                     is_admin: false,
                     profile: { firstName: firstName, lastName: lastName }
                 });
                 user.save(function (err, user) {
                     if (err) { return next(err); }
-                    let userInfo = user.toJson();
+                    let userInfo = user.toJSON();
                     res.status(201).json({
                         token: 'Bearer ' + jsonwebtoken.sign(userInfo, config.secret ,{ expiresIn: 10080 }),
                         user: userInfo
