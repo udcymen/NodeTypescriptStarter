@@ -1,9 +1,9 @@
 import bodyParser from "body-parser";
 import express from "express";
 import mongoose from "mongoose";
-import config from "./config/config";
+import config from "./Config/config";
 
-import {UserRouter} from "./router/user";
+import {UserRouter} from "./Router/user";
 
 class Application {
     public app: express.Application;

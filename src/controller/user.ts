@@ -1,16 +1,10 @@
 import jsonwebtoken from "jsonwebtoken";
-import { User, UserDocument } from "../model/user";
+import { User, UserDocument } from "../Model/user";
 import { Request, Response, NextFunction  } from "express";
 import config from "../config/config";
 
 
 export class UserController {
-
-    public authorize(req: Request, res: Response, next: NextFunction) {
-        return res.status(200).json({
-            validated: true
-        })
-    }
 
     //========================================
     // Login Route
@@ -23,7 +17,7 @@ export class UserController {
                 if (err) { return res.status(400).json({ error: "bad data" }); }
                 if (!isMatch) { return res.status(400).json({ error: 'Your login details could not be verified. Please try again.' }); }
     
-                    let userInfo = user.toJSON();
+                    let userInfo = user.toJson();
                     res.status(200).json({
                         token: 'Bearer ' + jsonwebtoken.sign(userInfo, config.secret ,{ expiresIn: 10080 }),
                         user: userInfo
@@ -41,7 +35,6 @@ export class UserController {
         const password = req.body.password;
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
-        const status = req.body.status;
 
         if (!email) {
             return res.status(422).send({ error: 'You must enter an email address.' });
@@ -51,9 +44,6 @@ export class UserController {
         }
         if (!password) {
             return res.status(422).send({ error: 'You must enter a password.' });
-        }
-        if (!status) {
-            return res.status(422).send({ error: 'You must enter a status.' });
         }
 
         User.findOne({ email: email }, function (err, existingUser) {
@@ -65,13 +55,14 @@ export class UserController {
                 let user = new User({
                     email: email,
                     password: password,
-                    status: status,
+                    status: "New User",
                     developer: false,
+                    is_admin: false,
                     profile: { firstName: firstName, lastName: lastName }
                 });
                 user.save(function (err, user) {
                     if (err) { return next(err); }
-                    let userInfo = user.toJSON();
+                    let userInfo = user.toJson();
                     res.status(201).json({
                         token: 'Bearer ' + jsonwebtoken.sign(userInfo, config.secret ,{ expiresIn: 10080 }),
                         user: userInfo
@@ -86,7 +77,7 @@ export class UserController {
             if (err) {
                 res.send(err);
             }
-            res.json(user);
+            res.json(user.toJSON());
         });
     }
 

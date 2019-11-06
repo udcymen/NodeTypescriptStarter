@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 export type UserDocument = mongoose.Document & {
     developer: Boolean;
     email: string;
+    is_admin: Boolean;
     password: String;
 
     profile: {
@@ -27,6 +28,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
+    is_admin: { type: Boolean},
     password: {
         required: true,
         type: String
