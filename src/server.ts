@@ -48,9 +48,9 @@ class Application {
             config.database,
             {
                 useCreateIndex: true,
+                useFindAndModify: false,
                 useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useFindAndModify: false
+                useUnifiedTopology: true
             }
         )
         .then(() => console.log("MongoDB connected..."))

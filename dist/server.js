@@ -6,12 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const body_parser_1 = __importDefault(require("body-parser"));
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const router_1 = require("./router/router");
-const userRouter_1 = require("./router/userRouter");
+const config_1 = __importDefault(require("./config/config"));
+const user_1 = require("./router/user");
 class Application {
     constructor() {
         this.app = express_1.default();
-        this.port = +process.env.serverPort || 3000;
+        this.port = +config_1.default.port;
         this.app.use(body_parser_1.default.urlencoded({ extended: false }));
         this.app.use(body_parser_1.default.json());
         this.initCors();
@@ -37,13 +37,14 @@ class Application {
     }
     // setup routes for the express server
     buildRoutes() {
-        this.app.use("/api/user", new userRouter_1.UserRouter().getRouter());
-        this.app.use("/api", new router_1.ApiRouter().getRouter());
+        this.app.use("/account", new user_1.UserRouter().getRouter());
     }
     mongoSetup() {
         mongoose_1.default.Promise = global.Promise;
         mongoose_1.default
-            .connect("mongodb+srv://admin:8r0jyHqIEZYb52uU@gameluncher-ve8ed.mongodb.net/test?retryWrites=true&w=majority", {
+            .connect(config_1.default.database, {
+            useCreateIndex: true,
+            useFindAndModify: false,
             useNewUrlParser: true,
             useUnifiedTopology: true
         })

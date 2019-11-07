@@ -1,55 +1,50 @@
-import { NextFunction, Request, Response  } from "express";
-import jsonwebtoken from "jsonwebtoken";
-import config from "../config/config";
-import { User, UserDocument } from "../Model/user";
-
-export class UserController {
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const config_1 = __importDefault(require("../config/config"));
+const user_1 = require("../Model/user");
+class UserController {
     // ========================================
     // Login Route
     // ========================================
-    public postLogin(req: Request, res: Response, next: NextFunction) {
+    postLogin(req, res, next) {
         if (req.user) {
             return res.status(200).json({ error: "You are already logged in" });
         }
-
-        User.findOne({ email: req.body.email }, function(err, user) {
+        user_1.User.findOne({ email: req.body.email }, function (err, user) {
             if (err) {
                 return res.status(400).json({ error: "bad data" });
             }
-
             if (!user) {
                 return res.status(400).json({ error: "Your login details could not be verified." });
-
             }
-            user.comparePassword(req.body.password, function(comparedPasswordErr, isMatch) {
+            user.comparePassword(req.body.password, function (comparedPasswordErr, isMatch) {
                 if (comparedPasswordErr) {
                     return res.status(400).json({ error: "bad data" });
                 }
-
                 if (!isMatch) {
                     return res.status(400).json({ error: "Your login details could not be verified." });
                 }
-
                 const userInfo = user.toJSON();
                 res.status(200).json({
-                        token: "Bearer " + jsonwebtoken.sign(userInfo, config.secret , { expiresIn: 10080 }),
-                        user: userInfo
-                    });
+                    token: "Bearer " + jsonwebtoken_1.default.sign(userInfo, config_1.default.secret, { expiresIn: 10080 }),
+                    user: userInfo
+                });
             });
         });
     }
-
     // ========================================
     // Registration Route
     // ========================================
-    public register(req: Request, res: Response, next: NextFunction) {
+    register(req, res, next) {
         // Check for registration errors
         const email = req.body.email;
         const password = req.body.password;
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
-
         if (!email) {
             return res.status(422).send({ error: "You must enter an email address." });
         }
@@ -59,14 +54,15 @@ export class UserController {
         if (!password) {
             return res.status(422).send({ error: "You must enter a password." });
         }
-
-        User.findOne({ email }, function(err, existingUser) {
-            if (err) { return next(err); }
+        user_1.User.findOne({ email }, function (err, existingUser) {
+            if (err) {
+                return next(err);
+            }
             if (existingUser) {
                 return res.status(422).send({ error: "This email address is already registered." });
-
-            } else {
-                const user = new User({
+            }
+            else {
+                const user = new user_1.User({
                     email,
                     is_admin: false,
                     is_developer: false,
@@ -74,66 +70,63 @@ export class UserController {
                     profile: { firstName, lastName },
                     status: "New User"
                 });
-                user.save(function(saveErr, newUser) {
-                    if (saveErr) { return next(saveErr); }
+                user.save(function (saveErr, newUser) {
+                    if (saveErr) {
+                        return next(saveErr);
+                    }
                     const userInfo = newUser.toJSON();
                     res.status(201).json({
-                        token: "Bearer " + jsonwebtoken.sign(userInfo, config.secret , { expiresIn: 10080 }),
+                        token: "Bearer " + jsonwebtoken_1.default.sign(userInfo, config_1.default.secret, { expiresIn: 10080 }),
                         user: userInfo
                     });
                 });
             }
         });
     }
-
     // ========================================
     // Logout Route
     // ========================================
-    public logout(req: Request, res: Response) {
+    logout(req, res) {
         req.logOut();
     }
-
-    public getUsers(req: Request, res: Response) {
-        User.find({}, (err, users) => {
+    getUsers(req, res) {
+        user_1.User.find({}, (err, users) => {
             if (err) {
                 res.send(err);
             }
             res.status(200).send(users);
         });
     }
-
-    public getUserById(req: Request, res: Response) {
-        User.findById({ _id: req.params.userId }, req.body, { new: true }, (err, user) => {
+    getUserById(req, res) {
+        user_1.User.findById({ _id: req.params.userId }, req.body, { new: true }, (err, user) => {
             if (err) {
                 res.send(err);
             }
             res.status(200).send(user.toJSON());
         });
     }
-
-    public updateUser(req: Request, res: Response) {
-        User.findOneAndUpdate({ _id: req.params.userId }, req.body, { new: true }, (err, user) => {
+    updateUser(req, res) {
+        user_1.User.findOneAndUpdate({ _id: req.params.userId }, req.body, { new: true }, (err, user) => {
             if (err) {
                 res.send(err);
             }
             res.status(200).send(user.toJSON());
         });
     }
-
-    public deleteUser(req: Request, res: Response) {
+    deleteUser(req, res) {
         if (!req.user) {
-            res.status(401).send({ message: "You are log in"});
+            res.status(401).send({ message: "You are log in" });
         }
-
         // if (!req.user.is_admin) {
         //     res.status(401).send({ message: "You are not admin"});
         // }
-
-        User.remove({ _id: req.params.userId }, (err) => {
+        user_1.User.remove({ _id: req.params.userId }, (err) => {
             if (err) {
-                res.status(422).send({ message: "Unsuccessfully Delete User!"});
+                res.status(422).send({ message: "Unsuccessfully Delete User!" });
             }
-            res.status(422).send({ message: "Successfully Deleted User!"});
+            res.status(422).send({ message: "Successfully Deleted User!" });
         });
     }
 }
+exports.UserController = UserController;
+//# sourceMappingURL=user.js.map
