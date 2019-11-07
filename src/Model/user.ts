@@ -8,8 +8,8 @@ export type UserDocument = mongoose.Document & {
 
     profile: {
         is_developer: Boolean;
-        firstName: String;
-        lastName: String;
+        first_name: String;
+        last_name: String;
         status: string;
     };
 
@@ -36,8 +36,8 @@ const UserSchema = new mongoose.Schema({
 
     profile: {
         is_developer: { type: Boolean},
-        firstName: { type: String },
-        lastName: { type: String },
+        first_name: { type: String },
+        last_name: { type: String },
         status: { type: String}
     },
 
@@ -73,8 +73,8 @@ UserSchema.methods.comparePassword = comparePassword;
 UserSchema.methods.toJSON = function () {
     return {
       _id: this._id,
-      firstName: this.profile.firstName,
-      lastName: this.profile.lastName,
+      first_name: this.profile.first_name,
+      last_name: this.profile.last_name,
       email: this.email,
       status: this.profile.status,
       is_developer: this.profile.is_developer,
